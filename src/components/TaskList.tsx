@@ -11,19 +11,56 @@ interface Task {
 }
 
 export function TaskList() {
+  /* 
+    useState< Algo > = interface Algo que "determina" o tipo de estrutura de dados;
+    useState([]) = os dados serão um vetor, no caso, um vetor de objetos, [{}, {}];
+   */
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if (newTaskTitle !== "") {
+      const idNumber = Math.floor(Math.random() * 100);
+      const titleTask = newTaskTitle;
+      const completed = false;      
+
+      // Obrigatoriamente, deve passar ao setTasks um vetor de objetos, [{}, {}].
+      setTasks([...tasks, { id: idNumber, title: titleTask, isComplete: completed }]);
+    }
+
+    /* 
+      if (!newTaskTitle) return;
+
+      const newTask = {
+        id: Math.random(),
+        title: newTaskTitle,
+        isComplete: false,
+      }
+      setTasks(olsState => [...oldState, newTask]);
+      setNewTaskTitle("");
+     */
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    const taskCompleted = tasks.map(task => (
+      /* { if(task.id === id) {
+        return {...task, isComplete: !task.isComplete};
+      }
+      return task; }*/
+
+      task.id === id ? {...task, isComplete: !task.isComplete} : task
+    ));
+
+    setTasks(taskCompleted);
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+    const taskRemaining = tasks.filter( task => task.id !== id );
+
+    setTasks(taskRemaining);
   }
 
   return (
